@@ -13,8 +13,7 @@
     <table class="thaeder">
         <thead>
         <tr>
-            <td style="text-align: left"><a href="index.html">Home</a></td>
-            <td style="text-align: right">Meals</td>
+            <jsp:include page="WEB-INF/jsp/fragments/header.jsp"/>
         </tr>
         </thead>
     </table>
@@ -33,17 +32,17 @@
     </thead>
     <tbody>
     <c:forEach items="${mealsTo}" var="mealTo">
-        <tr style="color: ${mealTo.isExcess() == true ? 'red' : 'green'}">
+        <tr class="${mealTo.excess ? 'excess' : 'normal'}">
             <td>${f:formatLocalDateTime(mealTo.dateTime, 'dd.MM.yyyy HH:mm')}</td>
             <td>${mealTo.description}</td>
             <td>${mealTo.calories}</td>
-            <td><a href="#">Edit meal</a></td>
-            <td><a href="#">Delete meal</a></td>
+            <td><a href="meals?action=edit&id=${mealTo.id}">Edit meal</a></td>
+            <td><a href="meals?action=delete&id=${mealTo.id}">Delete meal</a></td>
         </tr>
     </c:forEach>
     </tbody>
 </table>
 <br>
-<a href="#" class="buttons">Add meal</a>
+<a href="meals?action=create" class="buttons">Add meal</a>
 </body>
 </html>
