@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static ru.javawebinar.topjava.util.MealsUtil.CALORIES_PER_DAY;
 import static ru.javawebinar.topjava.util.MealsUtil.getMealsTo;
 
 public class MealServlet extends HttpServlet {
@@ -34,7 +35,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "all":
                 log.info("get all meals");
-                req.setAttribute("mealsTo", getMealsTo(repository.getAll()));
+                req.setAttribute("mealsTo", getMealsTo(repository.getAll(), CALORIES_PER_DAY));
                 req.getRequestDispatcher("/meals.jsp").forward(req, resp);
                 break;
             case "edit":
@@ -51,7 +52,7 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         log.info("save/edit meal");
         req.setCharacterEncoding("UTF-8");
 

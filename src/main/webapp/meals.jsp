@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib uri="http://example.com/functions" prefix="f" %>
 <html lang="ru">
 <head>
@@ -31,9 +32,14 @@
     </tr>
     </thead>
     <tbody>
+    <jsp:useBean id="mealsTo" scope="request" type="java.util.List"/>
     <c:forEach items="${mealsTo}" var="mealTo">
         <tr class="${mealTo.excess ? 'excess' : 'normal'}">
-            <td>${f:formatLocalDateTime(mealTo.dateTime, 'dd.MM.yyyy HH:mm')}</td>
+                <%--            <td>${f:formatLocalDateTime(mealTo.dateTime, 'dd.MM.yyyy HH:mm')}</td>--%>
+            <td>
+                <fmt:parseDate value="${mealTo.dateTime}" pattern="y-M-dd'T'H:m" var="parseDate"/>
+                <fmt:formatDate value="${parseDate}" pattern="dd.MM.yyyy HH:mm"/>
+            </td>
             <td>${mealTo.description}</td>
             <td>${mealTo.calories}</td>
             <td><a href="meals?action=edit&id=${mealTo.id}">Edit meal</a></td>
