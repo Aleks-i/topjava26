@@ -21,6 +21,39 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+    <br>
+    <form method="post" action="meals">
+        <table>
+            <thead>
+            <tr>
+                <th>От даты (включая)</th>
+                <th>До даты (включая)</th>
+                <th></th>
+                <th>От времени (включая)</th>
+                <th>До времени (исключая)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <input type="date" name="startDate">
+                </td>
+                <td>
+                    <input type="date" name="endDate">
+                </td>
+                <td></td>
+                <td>
+                    <input type="time" name="startTime">
+                </td>
+                <td>
+                    <input type="time" name="endTime">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="submit" name="action" value="between">Фильтровать</button>
+    </form>
+    <br>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">

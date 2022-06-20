@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -28,22 +30,36 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
 
-        Meal meal = new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
-
-        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        if (request.getParameter("id").isEmpty()) {
-            controller.create(meal);
+        if ("between".equals(action)) {
+            LocalDate startDate = request.getParameter("startDate").isEmpty() ? LocalDate.MIN :
+                    LocalDate.parse(request.getParameter("startDate")).minusDays(1);
+            LocalDate endDate = request.getParameter("endDate").isEmpty() ? LocalDate.MAX :
+                    LocalDate.parse(request.getParameter("endDate")).plusDays(1);
+            LocalTime startTime = request.getParameter("startTime").isEmpty() ? LocalTime.MIN :
+                    LocalTime.parse(request.getParameter("startTime"));
+            LocalTime endTime = request.getParameter("endTime").isEmpty() ? LocalTime.MAX :
+                    LocalTime.parse(request.getParameter("endTime"));
+            request.setAttribute("meals", controller.getBetween(startDate, endDate, startTime, endTime));
+            request.getRequestDispatcher("/meals.jsp").forward(request, response);
         } else {
-            int id = getId(request);
-            meal.setId(id);
-            controller.update(meal, id);
+            Meal meal = new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
+                    request.getParameter("description"),
+                    Integer.parseInt(request.getParameter("calories")));
+
+            log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+            if (request.getParameter("id").isEmpty()) {
+                controller.create(meal);
+            } else {
+                int id = getId(request);
+                meal.setId(id);
+                controller.update(meal, id);
+            }
+            response.sendRedirect("meals");
         }
-        response.sendRedirect("meals");
     }
 
     @Override
