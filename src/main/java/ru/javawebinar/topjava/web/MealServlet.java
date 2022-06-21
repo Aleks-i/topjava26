@@ -18,6 +18,9 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
+import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
+import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
+
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
@@ -35,14 +38,10 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if ("between".equals(action)) {
-            LocalDate startDate = request.getParameter("startDate").isEmpty() ? LocalDate.MIN :
-                    LocalDate.parse(request.getParameter("startDate")).minusDays(1);
-            LocalDate endDate = request.getParameter("endDate").isEmpty() ? LocalDate.MAX :
-                    LocalDate.parse(request.getParameter("endDate")).plusDays(1);
-            LocalTime startTime = request.getParameter("startTime").isEmpty() ? LocalTime.MIN :
-                    LocalTime.parse(request.getParameter("startTime"));
-            LocalTime endTime = request.getParameter("endTime").isEmpty() ? LocalTime.MAX :
-                    LocalTime.parse(request.getParameter("endTime"));
+            LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
+            LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
+            LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
+            LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
             request.setAttribute("meals", controller.getBetween(startDate, endDate, startTime, endTime));
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
         } else {

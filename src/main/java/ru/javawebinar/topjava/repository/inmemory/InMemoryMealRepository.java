@@ -1,10 +1,10 @@
 package ru.javawebinar.topjava.repository.inmemory;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,10 +49,17 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        Collection<Meal> mealList = repository.get(userId).values();
-        return CollectionUtils.isEmpty(mealList) ? Collections.emptyList() : mealList.stream()
+        Map<Integer, Meal> meals = repository.get(userId);
+        return meals == null ? Collections.emptyList() : meals.values().stream()
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
-}
 
+    @Override
+    public List<Meal> getAllBetweenDate(LocalDate startDate, LocalDate endDate, int userId) {
+        Map<Integer, Meal> mealsBetweenDate = repository.get(userId);
+        return mealsBetweenDate == null ? Collections.emptyList() : mealsBetweenDate.values().stream()
+                .filter(m -> m.getDate().isAfter(startDate) && m.getDate().isBefore(endDate))
+                .collect(Collectors.toList());
+    }
+}

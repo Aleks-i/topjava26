@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
@@ -9,8 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.util.DateTimeUtil.getEndDateOrMax;
+import static ru.javawebinar.topjava.util.DateTimeUtil.getStartDateOrMin;
 import static ru.javawebinar.topjava.util.MealsUtil.*;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
@@ -43,11 +45,9 @@ public class MealService {
         checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
-    public List<MealTo> getFilter(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId) {
-        List<Meal> mealsBetweenDate = repository.getAll(userId).stream()
-                .filter(m -> m.getDate().isAfter(startDate) &&
-                        m.getDate().isBefore(endDate))
-                .collect(Collectors.toList());
+    public List<MealTo> getFilter(@Nullable LocalDate startDate, @Nullable LocalDate endDate, @Nullable LocalTime startTime,
+                                  @Nullable LocalTime endTime, int userId) {
+        List<Meal> mealsBetweenDate = repository.getAllBetweenDate(getStartDateOrMin(startDate), getEndDateOrMax(endDate), userId);
         return getFilteredTos(mealsBetweenDate, DEFAULT_CALORIES_PER_DAY, startTime, endTime);
     }
 }
