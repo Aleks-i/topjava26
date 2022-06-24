@@ -1,0 +1,34 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Meal -->
+
+    <bean class="ru.javawebinar.topjava.web.meal.MealRestController">
+        <constructor-arg name="service" ref="mealService"/>
+    </bean>
+
+    <bean class="ru.javawebinar.topjava.service.MealService" name="mealService">
+        <constructor-arg name="repository" ref="inMemeoryMealRepository"/>
+    </bean>
+
+    <bean class="ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository" name="inMemeoryMealRepository"/>
+
+    <!-- User-->
+
+    <bean class="ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository" name="userRepository"/>
+
+    <bean class="ru.javawebinar.topjava.service.UserService" name="userService">
+        <constructor-arg name="repository" ref="userRepository"/>
+    </bean>
+
+    <bean id="abstractAdminRestController" abstract="true"
+          class="ru.javawebinar.topjava.web.user.AbstractUserController">
+        <constructor-arg name="service" ref="userService"/>
+    </bean>
+
+    <bean id="adminRestController" class="ru.javawebinar.topjava.web.user.AdminRestController"
+          parent="abstractAdminRestController">
+    </bean>
+
+</beans>
