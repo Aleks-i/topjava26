@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +10,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.javawebinar.topjava.TestWatch;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
+import static ru.javawebinar.topjava.TestWatch.*;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 @ContextConfiguration({
@@ -28,6 +33,19 @@ public class UserServiceTest {
 
     @Autowired
     private UserService service;
+
+    @Rule
+    public TestWatch testWatch = new TestWatch();
+
+    @AfterClass
+    public static void printTestResult() {
+        sb.append(String.format("\nTotal test time: %23d", TimeUnit.NANOSECONDS.toMillis(testTimeSpent)));
+        logger.info("\n---------------------------------------" +
+                "\nTest                      Duration, ms" +
+                "\n---------------------------------------" +
+                sb +
+                "\n---------------------------------------");
+    }
 
     @Test
     public void create() {
