@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -82,7 +81,6 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Disabled
     void getBetween() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "filter")
                 .param("startDate", "2020-01-30")
