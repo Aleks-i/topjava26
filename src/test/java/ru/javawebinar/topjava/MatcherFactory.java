@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,10 +25,27 @@ public class MatcherFactory {
     public static class Matcher<T> {
         private final Class<T> clazz;
         private final String[] fieldsToIgnore;
+        private BiConsumer<T, T> assertion;
+        private BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion;
+
+        private Matcher(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion, String... fieldsToIgnore) {
+            this.clazz = clazz;
+            this.fieldsToIgnore = fieldsToIgnore;
+            this.assertion = assertion;
+            this.iterableAssertion = iterableAssertion;
+        }
 
         private Matcher(Class<T> clazz, String... fieldsToIgnore) {
             this.clazz = clazz;
             this.fieldsToIgnore = fieldsToIgnore;
+        }
+
+        public static <T> Matcher<T> usingAssertions(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
+            return new Matcher<>(clazz, assertion, iterableAssertion);
+        }
+
+        private static String getContent(MvcResult result) throws UnsupportedEncodingException {
+            return result.getResponse().getContentAsString();
         }
 
         public void assertMatch(T actual, T expected) {
@@ -58,10 +76,6 @@ public class MatcherFactory {
 
         public T readFromJson(ResultActions action) throws UnsupportedEncodingException {
             return JsonUtil.readValue(getContent(action.andReturn()), clazz);
-        }
-
-        private static String getContent(MvcResult result) throws UnsupportedEncodingException {
-            return result.getResponse().getContentAsString();
         }
     }
 }
