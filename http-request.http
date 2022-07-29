@@ -1,0 +1,21 @@
+### Get meal id 100003
+GET localhost:8080/topjava/rest/user/meals/100003
+
+<> 2022-07-29T142402.200.json
+
+### Delete meal id 100003
+DELETE localhost:8080/topjava/rest/user/meals/100003
+
+<> 2022-07-29T142559.500.html
+
+### Get all meals
+GET localhost:8080/topjava/rest/user/meals
+
+<> 2022-07-29T143949.200.json
+
+### create meal
+POST localhost:8080/topjava/rest/user/meals
+
+curl -s -X POST -d '{"dateTime":"2020-02-01T12:00","description":"Created lunch","calories":300}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/topjava/rest/user/meals
+
+###

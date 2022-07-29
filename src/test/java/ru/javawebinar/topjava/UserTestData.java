@@ -13,7 +13,7 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "meals");
     public static final MatcherFactory.Matcher<User> USER_WITH_MEALS_MATCHER =
-            MatcherFactory.Matcher.usingAssertions(User.class,
+            MatcherFactory.usingAssertions(User.class,
                     (a, e) -> assertThat(a).usingRecursiveComparison()
                             .ignoringFields("registered", "meals.user").ignoringAllOverriddenEquals().isEqualTo(e),
                     (a, e) -> {

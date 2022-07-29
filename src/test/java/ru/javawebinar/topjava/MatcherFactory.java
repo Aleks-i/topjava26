@@ -22,6 +22,16 @@ public class MatcherFactory {
         return new Matcher<>(clazz, fieldsToIgnore);
     }
 
+    public static <T> Matcher<T> usingEqualsComparator(Class<T> clazz) {
+        return new Matcher<>(clazz,
+                (a, e) -> assertThat(a).isEqualTo(e),
+                (a, e) -> assertThat(a).isEqualTo(e));
+    }
+
+    public static <T> Matcher<T> usingAssertions(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
+        return new Matcher<>(clazz, assertion, iterableAssertion);
+    }
+
     public static class Matcher<T> {
         private final Class<T> clazz;
         private final String[] fieldsToIgnore;
@@ -38,10 +48,6 @@ public class MatcherFactory {
         private Matcher(Class<T> clazz, String... fieldsToIgnore) {
             this.clazz = clazz;
             this.fieldsToIgnore = fieldsToIgnore;
-        }
-
-        public static <T> Matcher<T> usingAssertions(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
-            return new Matcher<>(clazz, assertion, iterableAssertion);
         }
 
         private static String getContent(MvcResult result) throws UnsupportedEncodingException {
